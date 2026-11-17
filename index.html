@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Reboot Galaxy NOVA</title>
+<meta name="description" content="使わなかった設定資料が、次の作り手の作品になる。Reboot Galaxy NOVA のホーム画面。">
+<meta name="theme-color" content="#04061a">
+<!-- ========================= ファビコン ========================= -->
+<link rel="icon" href="#" type="image/svg+xml">  <!-- 元あったとこ: images/favicon.svg -->
+
+
+<!-- ========================= スタイルシート（CSS） ========================= -->
+<link rel="stylesheet" href="#">  <!-- 1/6 ツールチップ｜元あったとこ: /vendor/tippy/tippy.css -->
+<link rel="stylesheet" href="#">  <!-- 2/6 ツールチップのアニメ｜元あったとこ: /vendor/tippy-anim/shift-away.css -->
+<link rel="stylesheet" href="#">  <!-- 3/6 カルーセル｜元あったとこ: /vendor/swiper/swiper-bundle.min.css -->
+<link rel="stylesheet" href="#">  <!-- 4/6 スムーズスクロール｜元あったとこ: /vendor/lenis/lenis.css -->
+<link rel="stylesheet" href="#">  <!-- 5/6 自作・共通スタイル｜元あったとこ: css/nova.css -->
+<link rel="stylesheet" href="#">  <!-- 6/6 自作・このページ用｜元あったとこ: css/app.css -->
+
+
+<!-- ========================= Three.js まわり ========================= -->
+<link rel="modulepreload" href="#">  <!-- Three.js の先読み｜元あったとこ: /vendor/three/build/three.module.js -->
+
+<!-- importmap：import "three" などの名前と実際のパスの対応表。値は # にできないから元のパスのままに -->
+<script type="importmap">
+{ "imports": { "three": "/vendor/three/build/three.module.js", "three/addons/": "/vendor/three/addons/" } }
+</script>
+
+
+<!-- ========================= 動きの強さ（外部ファイルは特になし） ========================= -->
+<!-- localStorage の rg.motion を読んで full（通常）/ calm（控えめ）を決める -->
+<script>try{var m=localStorage.getItem('rg.motion');document.documentElement.dataset.motion=m||(matchMedia('(prefers-reduced-motion: reduce)').matches?'calm':'full')}catch(e){document.documentElement.dataset.motion='full'}</script>
+</head>
+<body class="app-page" data-view="galaxy">
+
+<!-- ========================= 背景（宇宙キャンバス） ========================= -->
+<!-- js/core/cosmos.js が描画する -->
+<div class="cosmos" aria-hidden="true"><canvas data-cosmos="app"></canvas></div>
+<div class="cosmos-veil app-veil" aria-hidden="true"></div>
+
+<!-- ========================= アプリ本体 ========================= -->
+<div class="app" id="app">
+  <p class="demo-bar" id="modeNote" role="status"><i data-lucide="flask-conical"></i><span>読み込んでいます…</span></p>
+
+  <!-- ----- ヘッダー：ロゴ／メインメニュー／検索・ガイド・アカウント ----- -->
+  <header class="topbar">
+    <a class="brand" href="#galaxy" aria-label="Reboot Galaxy NOVA ホーム">
+      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+        <defs>
+          <linearGradient id="bm" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0"   stop-color="#8af5ff"/>
+            <stop offset=".55" stop-color="#b6a8ff"/>
+            <stop offset="1"   stop-color="#ffc6e6"/>
+          </linearGradient>
+        </defs>
+        <circle cx="20" cy="20" r="9" fill="none" stroke="url(#bm)" stroke-width="2.4"/>
+        <ellipse cx="20" cy="20" rx="18" ry="6" fill="none" stroke="url(#bm)" stroke-width="1.4" transform="rotate(-24 20 20)"/>
+        <circle cx="33" cy="12" r="1.6" fill="#fff"/>
+      </svg>
+      <span class="brand-word">REBOOT <b>GALAXY</b></span>
+    </a>
+
+    <nav class="mainnav" aria-label="メインメニュー">
+      <span class="nav-ink" aria-hidden="true"></span>
+      <button type="button" data-view="galaxy" aria-current="page"><i data-lucide="orbit"></i><span>銀河から探す</span></button>
+      <button type="button" data-view="read"><i data-lucide="book-open"></i><span>物語を読む</span></button>
+      <button type="button" data-view="sell"><i data-lucide="feather"></i><span>出品する</span></button>
+    </nav>
+
+    <div class="top-actions">
+      <button type="button" class="search-trigger" id="openPalette" aria-label="サイト内をさがす（Ctrl+K）">
+        <i data-lucide="search"></i><span>さがす…</span><kbd>Ctrl K</kbd>
+      </button>
+      <button type="button" class="icon-btn" id="helpBtn" data-tip="はじめての方へ" aria-label="はじめての方へのガイド"><i data-lucide="compass"></i></button>
+      <div class="profile-wrap">
+        <button type="button" class="me" id="meBtn" aria-expanded="false" aria-controls="profileMenu" aria-label="アカウントメニュー（マイページ・プロフィール・設定）">
+          <span class="av" id="meAv">…</span><span class="me-name" id="meName">読み込み中</span><i data-lucide="chevron-down"></i>
+        </button>
+        <div class="profile-menu glass" id="profileMenu" role="menu" hidden>
+          <p class="eyebrow">ACCOUNT</p>
+          <button type="button" role="menuitem" data-profile="mypage"><i data-lucide="layout-dashboard"></i>マイページ</button>
+          <button type="button" role="menuitem" data-profile="profile"><i data-lucide="user-round-pen"></i>プロフィールを編集</button>
+          <button type="button" role="menuitem" data-profile="settings"><i data-lucide="settings-2"></i>設定</button>
+          <button type="button" role="menuitem" data-profile="logout" class="danger"><i data-lucide="log-out"></i>ログアウト</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ----- 読み込み失敗時だけ出るエラー枠 ----- -->
+  <div class="boot-error glass" id="bootError" role="alert" hidden>
+    <h2><i data-lucide="satellite-dish"></i>データを読み込めませんでした</h2>
+    <p id="bootErrorMessage"></p>
+    <div class="row"><button class="btn sm" id="retryBoot" type="button"><i data-lucide="refresh-cw"></i>もう一度読み込む</button>
+    <a class="btn ghost sm" href="http://localhost:3000/" id="serverLink" hidden>起動したアプリを開く</a></div>
+  </div>
+
+  <main id="main">
+    <!-- ================= 銀河から探す ================= -->
+    <section class="view" id="view-galaxy" aria-labelledby="galaxyTitle">
+      <header class="view-hero">
+        <p class="eyebrow">SOURCE DISCOVERY</p>
+        <h1 id="galaxyTitle" class="display" data-split>水色の星から、<br>物語のもとを見つける。</h1>
+        <p class="lead">銀河の<span class="c-cyan">水色の星</span>は、次の作り手が使える設定資料（<button type="button" class="term" data-term="moto">作品のもと</button>）。<span class="c-mint">緑の星</span>は、そこから生まれた完成ストーリーです。星を選ぶと、見本と<button type="button" class="term" data-term="joken">利用条件</button>が開きます。</p>
+        <div class="hero-actions">
+          <button type="button" class="btn" id="focusSourceStars"><i data-lucide="sparkles"></i>水色の星だけ見る</button>
+          <button type="button" class="btn ghost" id="jumpToSourceList"><i data-lucide="list-filter"></i>一覧で条件から探す</button>
+        </div>
+      </header>
+
+      <!-- 3D銀河（Three.js）。星の数・フィルタ・凡例・操作ボタンを重ねて表示 -->
+      <div class="galaxy-stage" id="galaxyStage">
+        <div class="galaxy-canvas" id="galaxyCanvas" tabindex="0" role="application" aria-roledescription="3Dの銀河" aria-label="みんなの銀河。矢印キーで回す、＋と−で拡大・縮小、0で中心にもどす。Tabキーで星の名前を順に選べます。"></div>
+        <!-- 左上：件数 -->
+        <div class="gx gx-counts glass">
+          <div><b id="gxMat">–</b><span>作品のもと</span></div>
+          <div><b id="gxManga">–</b><span>完成ストーリー</span></div>
+          <div><b id="gxPeople">–</b><span>作り手</span></div>
+        </div>
+        <!-- 表示の絞り込み -->
+        <div class="gx gx-filters" role="group" aria-label="表示するものを選ぶ">
+          <button type="button" data-gxf="all" aria-pressed="true">すべて</button>
+          <button type="button" data-gxf="material" aria-pressed="false"><i class="dot cyan"></i>作品のもと</button>
+          <button type="button" data-gxf="manga" aria-pressed="false"><i class="dot mint"></i>完成ストーリー</button>
+          <button type="button" data-gxf="mine" aria-pressed="false"><i class="dot amber"></i>自分の作品</button>
+        </div>
+        <!-- 凡例 -->
+        <div class="gx gx-legend">
+          <span><i class="dot cyan"></i>○ 作品のもと</span>
+          <span><i class="dot mint"></i>◆ 完成ストーリー</span>
+          <span><i class="dot amber"></i>★ 自分の作品</span>
+          <span class="flow-key"><i></i>光の流れ＝この資料から生まれた</span>
+        </div>
+        <!-- 操作ボタン（回す・拡大縮小・自動回転・リセット） -->
+        <div class="gx gx-controls">
+          <span class="gx-hint" id="gxHint"><i data-lucide="mouse-pointer-2"></i><span>ドラッグで回す・<kbd>Ctrl</kbd>＋ホイールで拡大・星か名前をクリック</span></span>
+          <div class="gx-tools glass" role="toolbar" aria-label="銀河の表示を操作する" aria-controls="galaxyCanvas">
+            <button type="button" data-gx="left" data-tip="左に回す（← キー）" aria-label="左に回す"><i data-lucide="rotate-ccw"></i></button>
+            <button type="button" data-gx="right" data-tip="右に回す（→ キー）" aria-label="右に回す"><i data-lucide="rotate-cw"></i></button>
+            <span class="gx-sep" aria-hidden="true"></span>
+            <button type="button" data-gx="in" data-tip="近づく（＋ キー・Ctrl＋ホイール）" aria-label="近づく"><i data-lucide="zoom-in"></i></button>
+            <button type="button" data-gx="out" data-tip="遠ざかる（− キー）" aria-label="遠ざかる"><i data-lucide="zoom-out"></i></button>
+            <span class="gx-sep" aria-hidden="true"></span>
+            <button type="button" data-gx="spin" id="gxSpin" aria-pressed="true" data-tip="自動回転を止める" aria-label="自動回転"><i data-lucide="pause"></i></button>
+            <button type="button" data-gx="reset" id="gxReset" data-tip="中心にもどす（0 キー）" aria-label="中心にもどす"><i data-lucide="locate-fixed"></i></button>
+          </div>
+        </div>
+        <!-- 補助表示（ホイールのヒント／ツールチップ／読み込み中／WebGL非対応のとき） -->
+        <div class="gx-wheel-hint" id="gxWheelHint" role="status" hidden><i data-lucide="mouse"></i><span><kbd>Ctrl</kbd>＋ホイールで拡大・縮小できます</span></div>
+        <div class="gx-tip glass" id="gxTip" hidden></div>
+        <div class="gx-loading" id="gxLoading"><div class="loader-orbit"><i></i><i></i><i></i></div><span>銀河を組み立てています…</span></div>
+        <div class="gx-fallback" id="gxFallback" hidden>このブラウザでは3D表示（WebGL）が使えません。下の一覧から作品のもとをご覧ください。</div>
+      </div>
+
+      <!-- 銀河の最近の動き（横スクロール） -->
+      <section class="activity" aria-labelledby="activityTitle">
+        <div class="section-head"><p class="eyebrow">RECENT SIGNALS</p><h2 id="activityTitle">銀河の最近の動き</h2></div>
+        <div class="activity-rail" id="activityRail" data-lenis-prevent-horizontal></div>
+      </section>
+
+      <!-- 作品のもと一覧（検索・種類フィルタ付き） -->
+      <section class="source-list" id="sourceList" aria-labelledby="sourceListTitle">
+        <div class="section-head">
+          <p class="eyebrow">SOURCE CATALOG</p>
+          <h2 id="sourceListTitle">銀河にある作品のもとを一覧で探す</h2>
+          <p class="muted">種類・資料名・作者名からしぼれます。カードを選ぶと、資料の見本と「利用条件を確認して制作を始める」が開きます。</p>
+        </div>
+        <div class="list-tools">
+          <label class="field search-field">
+            <input id="galaxySourceSearch" type="search" placeholder="例：世界観、図書館、三重ハル" autocomplete="off">
+            <span class="label">資料名・種類・作者名で探す</span>
+          </label>
+          <div class="chips" id="galaxyFilters"></div>
+        </div>
+        <div class="card-grid" id="galaxyItems"></div>
+        <p class="empty" id="galaxyEmpty" hidden><i data-lucide="telescope"></i>条件に合う作品のもとが見つかりませんでした。別の種類や言葉でお試しください。</p>
+      </section>
+
+      <!-- この図の読み方（3枚の説明カード） -->
+      <section class="howto" aria-labelledby="howtoTitle">
+        <div class="section-head"><p class="eyebrow">HOW TO READ</p><h2 id="howtoTitle">この図の読み方</h2></div>
+        <div class="howto-grid">
+          <article class="glass spot" data-reveal><span class="spot-light"></span><i data-lucide="sparkle" class="howto-ico cyan"></i><h3>星のひとつが1作品</h3><p>水色は出品された作品のもと、緑はそこから生まれた完成ストーリーです。星の大きさは売上や購入数を表していません。</p></article>
+          <article class="glass spot" data-reveal><span class="spot-light"></span><i data-lucide="git-branch" class="howto-ico mint"></i><h3>光の線はつながり</h3><p>「この資料から、この物語が生まれた」関係を結んでいます。線を流れる光は、元の設定作者へ届く分配の向きです。</p></article>
+          <article class="glass spot" data-reveal><span class="spot-light"></span><i data-lucide="star" class="howto-ico amber"></i><h3>金色はあなたの作品</h3><p>出品したもの、作ったストーリーが金色になります。「自分の作品」を押すと、それだけが明るくなります。</p></article>
+        </div>
+      </section>
+    </section>
+
+    <!-- ================= 物語を読む ================= -->
+    <section class="view" id="view-read" aria-labelledby="readTitle" hidden>
+      <!-- バナー画像（元あったとこ: images/stories-across-genres-hero-v2.jpg） -->
+      <header class="banner" data-artwork="#">
+        <img src="#" alt="" class="banner-fallback" decoding="async">
+        <div class="banner-copy">
+          <p class="eyebrow">STORIES ACROSS GENRES</p>
+          <h1 id="readTitle" class="display" data-split>物語を読む</h1>
+          <p class="lead">購入前に、販売額と<button type="button" class="term" data-term="bunpai">分配先</button>を確認できます。展示用の<button type="button" class="term" data-term="demo">デモ購入</button>で、制作者と元の設定作者へ届く仕組みを体験してください。</p>
+        </div>
+      </header>
+      <!-- 注目の物語カルーセル（Swiper） -->
+      <section class="featured" aria-label="注目の物語" aria-roledescription="カルーセル">
+        <div class="story-stage">
+          <div class="swiper story-swiper" id="storySwiper"><div class="swiper-wrapper" id="storySlides"></div></div>
+          <button type="button" class="story-nav prev" id="storyPrev" aria-label="前の物語へ"><i data-lucide="chevron-left"></i></button>
+          <button type="button" class="story-nav next" id="storyNext" aria-label="次の物語へ"><i data-lucide="chevron-right"></i></button>
+        </div>
+        <div class="story-bar">
+          <span class="story-count" id="storyCount" aria-live="polite">– / –</span>
+          <div class="swiper-scrollbar story-scrollbar" id="storyScrollbar" title="つまんで左右に動かせます"></div>
+          <button type="button" class="story-play" id="storyPlay" aria-pressed="false"><i data-lucide="play"></i><span>自動で送る</span></button>
+        </div>
+        <p class="story-hint"><i data-lucide="hand"></i><span>ドラッグ・スワイプ・<kbd>Shift</kbd>＋ホイール・<kbd>←</kbd><kbd>→</kbd>キーで横に動かせます。横のカードを押すと中央に来ます。</span></p>
+      </section>
+      <div class="section-head"><p class="eyebrow">ALL STORIES</p><h2>すべての完成ストーリー</h2></div>
+      <div class="card-grid" id="mangaList"></div>
+    </section>
+
+    <!-- ================= 出品する ================= -->
+    <section class="view" id="view-sell" aria-labelledby="sellTitle" hidden>
+      <!-- バナー画像（元あったとｋ: images/source-to-manga-hero.jpg） -->
+      <header class="banner right" data-artwork="#">
+        <img src="#" alt="" class="banner-fallback" decoding="async">
+        <div class="banner-copy">
+          <p class="eyebrow">SHARE YOUR SOURCE</p>
+          <h1 id="sellTitle" class="display" data-split>眠っている設定を、<br>次の物語へ。</h1>
+          <p class="lead">見本と利用条件への同意を登録します。初期費用0円・非独占で使われ、完成作品が売れたときに設定作者へ10％を配分します。</p>
+        </div>
+      </header>
+
+      <!-- 出品フォーム（左）とライブプレビュー（右） -->
+      <div class="sell-layout">
+        <form class="sell-form" id="sellForm" novalidate>
+          <ol class="steps" aria-label="出品の手順">
+            <li class="step glass" data-step="1">
+              <div class="step-head"><span class="step-no">01</span><div><h2>どんな資料ですか？</h2><p class="muted">作品のもとの名前と、入っているものを書きます。</p></div></div>
+              <label class="field"><input type="text" id="fTitle" maxlength="80" placeholder="例：夜だけ星座に変わる校舎"><span class="label">タイトル（80文字まで）</span></label>
+              <label class="field"><textarea id="fDesc" maxlength="4000" placeholder="例：ゲーム企画で使わなかった資料です。キャラクター3人の設定画、教室のマップ、世界のルールが入っています。"></textarea><span class="label">中身の説明（20文字以上）</span></label>
+            </li>
+            <li class="step glass" data-step="2">
+              <div class="step-head"><span class="step-no">02</span><div><h2>種類を選ぶ</h2><p class="muted">近いものを1つ選んでください。</p></div></div>
+              <div class="chips" id="sellKinds"></div>
+            </li>
+            <li class="step glass" data-step="3">
+              <div class="step-head"><span class="step-no">03</span><div><h2>利用条件と収益分配への同意</h2><p class="muted">初期費用0円・非独占。完成作品1件に元資料1件を紐づけます。</p></div></div>
+              <div class="split-visual" aria-label="500円で売れたときの分配の例">
+                <div class="split-bar"><i class="c" style="--w:80%"><span>制作者 80%</span></i><i class="s" style="--w:10%"></i><i class="p" style="--w:10%"></i></div>
+                <div class="split-legend"><span><i class="dot mint"></i>制作者 400円</span><span><i class="dot cyan"></i>設定作者（あなた）50円</span><span><i class="dot" style="background:var(--violet)"></i>運営 50円</span></div>
+              </div>
+              <ul class="terms-list">
+                <li>同意した条件で、サイト内販売が続く間、購入ごとに分配します。</li>
+                <li>資料の再販売は禁止、元作者の表示は必須です。</li>
+                <li>孫作品への多段階分配、サイト外販売、月額サービスは対象外です。資料全文・添付ファイルの配布は未実装です。</li>
+              </ul>
+              <label class="check"><input id="authorConsent" type="checkbox"><span class="box"></span><span>私はこの資料の利用を許可する権利を持ち、上記の条件と収益分配に同意して登録します。</span></label>
+            </li>
+          </ol>
+          <div class="sell-submit">
+            <button class="btn lg" id="sellSubmit" type="submit"><i data-lucide="send"></i>この内容で出品する</button>
+            <p class="note">他の人の作品や、共同で作ったものを出すときは、先に許可を確認してください。自動チェックは目安で、権利や売上を保証するものではありません。</p>
+          </div>
+        </form>
+
+        <aside class="sell-preview" aria-label="出品カードのプレビュー">
+          <p class="eyebrow">LIVE PREVIEW</p>
+          <div id="sellPreview"></div>
+          <ul class="checks" id="sellChecks"></ul>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ================= マイページ ================= -->
+    <section class="view" id="view-mypage" aria-labelledby="myTitle" hidden>
+      <header class="profile-hero glass">
+        <span class="profile-av" id="myAvatar">…</span>
+        <div class="profile-copy">
+          <p class="eyebrow">MY PAGE</p>
+          <h1 id="myTitle" class="display">マイページ</h1>
+          <p class="muted" id="myBio">同意履歴・デモ購入・制作者と設定作者それぞれのデモ配分額を確認できます。実際の請求や送金は行いません。</p>
+        </div>
+        <button type="button" class="btn ghost" id="myPublicProfile"><i data-lucide="user-round-pen"></i>プロフィール・自己紹介を編集</button>
+      </header>
+
+      <!-- 集計カード4枚 -->
+      <div class="stats">
+        <article class="stat glass" data-reveal><i data-lucide="file-signature"></i><span>同意済みの資料</span><b><em id="stMat">0</em>件</b></article>
+        <article class="stat glass" data-reveal><i data-lucide="book-marked"></i><span>買ったストーリー</span><b><em id="stManga">0</em>件</b></article>
+        <article class="stat glass" data-reveal><i data-lucide="undo-2"></i><span>デモ返金件数</span><b><em id="statSub">0</em>件</b></article>
+        <article class="stat glass accent" data-reveal><i data-lucide="coins"></i><span>デモ配分額 合計</span><b><em id="stIncome">0</em>円</b></article>
+      </div>
+
+      <!-- グラフ2つ（Chart.js）：役割別／作品別 -->
+      <div class="dash-grid">
+        <section class="panel glass" data-reveal>
+          <div class="panel-head"><h2>役割ごとのデモ収益</h2><button type="button" class="term" data-term="bunpai">しくみ</button></div>
+          <div class="chart-wrap"><canvas id="roleChart" aria-label="制作者分と設定作者分のデモ配分"></canvas><div class="chart-center"><b id="roleTotal">0円</b><span>デモ配分</span></div></div>
+          <p class="note">有効な購入と返金済みの取引を分け、返金分の有効売上・配分は0円で表示します。</p>
+        </section>
+        <section class="panel glass" data-reveal>
+          <div class="panel-head"><h2>作品ごとの配分</h2></div>
+          <div class="chart-wrap bar"><canvas id="workChart" aria-label="作品ごとのデモ配分額"></canvas></div>
+          <p class="empty small" id="workChartEmpty" hidden>まだ売上記録がありません。0円は売上がないことを表します。</p>
+        </section>
+      </div>
+
+      <!-- 収益の内訳 -->
+      <section class="panel glass" data-reveal>
+        <div class="panel-head"><h2>収益の内訳</h2></div>
+        <div class="income-cols" id="subs"></div>
+      </section>
+
+      <!-- サブスクリプション・ファンクラブ -->
+      <section class="panel glass" data-reveal>
+        <div class="panel-head"><h2>サブスクリプション・ファンクラブ</h2><button type="button" class="term" data-term="houdai">読み放題</button></div>
+        <p class="muted small">展示用のデモ加入です。実際の決済・自動更新・送金はありません。作品の売上分配とは別に管理します。</p>
+        <div id="membershipList" class="memberships" aria-live="polite"></div>
+      </section>
+
+      <!-- 利用中の資料と同意履歴 -->
+      <section class="panel glass" data-reveal>
+        <div class="panel-head"><h2>利用中の資料と同意履歴</h2><button class="btn sm" id="publishWork" type="button"><i data-lucide="plus"></i>完成作品を登録</button></div>
+        <div id="agreementList" class="timeline"></div>
+        <p class="note" id="legacyNote"></p>
+      </section>
+
+      <!-- デモ購入履歴・返金 -->
+      <section class="panel glass" data-reveal>
+        <div class="panel-head"><h2>デモ購入履歴・返金</h2></div>
+        <div class="list" id="history"></div>
+        <p class="empty small" id="historyEmpty" hidden>まだ購入がありません。「物語を読む」から購入すると、ここに残ります。</p>
+      </section>
+
+      <!-- 自分が出品した作品のもと -->
+      <section class="panel glass" data-reveal>
+        <div class="panel-head"><h2>自分が出品した作品のもと</h2></div>
+        <div class="mini-grid" id="myMaterials"></div>
+        <p class="empty small" id="myMaterialsEmpty" hidden>まだ出品がありません。「出品する」から登録できます。</p>
+      </section>
+    </section>
+  </main>
+
+  <!-- ----- フッター：動き控えめの切り替えボタン／現在のモード表示 ----- -->
+  <footer class="site-foot">
+    <span>© 2049 Reboot Galaxy NOVA — 個人の創作素材が、次の個人の作品になる。</span>
+    <span class="foot-right"><button type="button" class="motion-toggle" data-motion-toggle></button><span id="footMode" class="mono"></span></span>
+  </footer>
+</div>
+
+<!-- ========================= コマンドパレット（Ctrl+K / ⌘K） ========================= -->
+<div class="palette-overlay" id="palette" hidden data-lenis-prevent>
+  <div class="palette glass" role="dialog" aria-modal="true" aria-label="サイト内をさがす">
+    <label class="palette-input"><i data-lucide="search"></i><input id="paletteInput" type="search" placeholder="作品のもと・ストーリー・作者・画面をさがす" autocomplete="off" aria-controls="paletteList"><kbd>Esc</kbd></label>
+    <ul class="palette-list" id="paletteList" role="listbox"></ul>
+    <p class="palette-foot"><span><kbd>↑</kbd><kbd>↓</kbd> 選ぶ</span><span><kbd>Enter</kbd> 開く</span></p>
+  </div>
+</div>
+
+<!-- ========================= スクリプト（JS） ========================= -->
+
+<!-- ライブラリ（15本・上から順に読み込む。順番を変えない） -->
+<script src="#"></script>  <!--  1/15 GSAP本体（アニメーション）｜元あったとこ: /vendor/gsap/gsap.min.js -->
+<script src="#"></script>  <!--  2/15 GSAP ScrollTrigger（スクロール連動）｜元あったとこ: /vendor/gsap/ScrollTrigger.min.js -->
+<script src="#"></script>  <!--  3/15 GSAP SplitText（文字を分割）｜元あったとこ: /vendor/gsap/SplitText.min.js -->
+<script src="#"></script>  <!--  4/15 GSAP ScrambleText（文字スクランブル）｜元あったとこ: /vendor/gsap/ScrambleTextPlugin.min.js -->
+<script src="#"></script>  <!--  5/15 GSAP Flip（位置変化アニメ）｜元あったとこ: /vendor/gsap/Flip.min.js -->
+<script src="#"></script>  <!--  6/15 GSAP CustomEase（イージング）｜元あったとこ: /vendor/gsap/CustomEase.min.js -->
+<script src="#"></script>  <!--  7/15 Lenis（スムーズスクロール）｜元あったとこ: /vendor/lenis/lenis.min.js -->
+<script src="#"></script>  <!--  8/15 Popper（位置計算・Tippyの依存）｜元あったとこ: /vendor/popper/popper.min.js -->
+<script src="#"></script>  <!--  9/15 Tippy（ツールチップ）｜元あったとこ: /vendor/tippy/tippy.umd.min.js -->
+<script src="#"></script>  <!-- 10/15 vanilla-tilt（カードの傾き）｜元あったとこ: /vendor/tilt/vanilla-tilt.min.js -->
+<script src="#"></script>  <!-- 11/15 CountUp（数字のカウントアップ）｜元あったとこ: /vendor/countup/countUp.umd.js -->
+<script src="#"></script>  <!-- 12/15 Confetti（紙吹雪）｜元あったとこ: /vendor/confetti/confetti.browser.js -->
+<script src="#"></script>  <!-- 13/15 Chart.js（マイページのグラフ）｜元あったとこ: /vendor/chart/chart.umd.min.js -->
+<script src="#"></script>  <!-- 14/15 Swiper（カルーセル）｜元あったとこ: /vendor/swiper/swiper-bundle.min.js -->
+<script src="#"></script>  <!-- 15/15 Lucide（アイコン）｜元あったとこ: /vendor/lucide/lucide.min.js -->
+
+<!-- アプリ本体（最後に読み込む） -->
+<!-- 元あったとこ: js/app/main.js ／ ここから core/・store.js・flows.js・views.js が読み込まれる -->
+<script type="module" src="#"></script>
+</body>
+</html>
