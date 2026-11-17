@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reboot Galaxy NOVA - ログイン</title>
+    <meta name="description" content="使われなかった設定資料が次の作り手の物語になる。Reboot Galaxy NOVA のログインとアカウント作成。">
+    <meta name="theme-color" content="#04061a">
+    <link rel="stylesheet" href="#">
+    <link rel="stylesheet" href="#">
+    <link rel="stylesheet" href="#">
+    <link rel="stylesheet" href="#">
+    <link rel="stylesheet" href="#">
+    <link rel="stylesheet" href="#">
+</head>
+
+<body class="login_page">
+
+
+
+    <div class="cosmos" aria-hidden="true">
+        <canvas data-cosmos="login" data-engin="three.jsr186" width="443" height="915">
+    </div>
+    <div class="cosmos-veil login-veil" aria-hidden="true"></div>
+
+    <div class="jogin-shell">
+
+
+        <header class="top" data-intro>
+            <a href="#">
+                <svg></svg>
+                <span class="brand-woed">
+                    "REBOOT"
+                    <b>GALAXY</b>
+                </span>
+                <span class="edition">NOVA</span>
+            </a>
+
+            <div class="status ok" aria-live="polite">
+                <i id="status_dot"></i>
+                <span id="status_text">ALL SYSTEMS ONLINE</span>
+            </div>
+        </header>
+
+
+
+        <main class="stage">
+
+            <section class="panel glass orbit" aria-labelledby="panelTitle" data-intro>
+                <p class="eyebrow" id="eyebrow">SECURE ACCESS / 07</p>
+                <h1 id="panelTitle" class="serif headline" aria-label="Welcome back,explorer.">
+                    <!-- １文字ずつ書くならここから -->
+                    <!-- <div></div> -->
+                </h1>
+                <p>あなたの宇宙へのアクセスを再開します。</p>
+
+                <!-- 登録選択 -->
+                <!-- ログイン・アカウント作成のタブ入れる箱 -->
+                <div class="tab" role="tablist" aria-label="ログインとアカウント作成">
+                    
+                    <!-- 選択中のタブを示す -->
+                    <span class="tab_ink" aria-hidden="true"></span>
+
+                    <button type="button" role="tab" id="tab_login" aria-controls="from_login" aria-selected="true">ログイン</button>
+                    <button type="button" role="tab" id="tab_register" aria-controls="from_register" aria-selected="false">アカウント作成</button>
+
+                </div>
+
+                <div class="forms">
+
+
+
+                    <!-- ログイン -->
+                    <form id="from_login" role="tabpanel" aria-labelledby="tab_login" novalidate>
+                    
+                        <!-- メールアドレス -->
+                        <label>
+                            <input type="email" name="email" placeholder="name@galaxy.com" autocomplete="email" required>
+                            <span class="label">メールアドレス</span>
+                        </label>
+
+
+                        <!-- パスワード -->
+                        <label class="field">
+                            <input type="password" name="password" placeholder="●●●●●●●●" autocomplete="current-password" required>
+                            <span class="label">パスワード</span>
+                            <button type="button" class="trail"></button>
+                        </label>
+
+
+
+                        <!-- ログイン維持 -->
+                        <div class="options">
+                            <label class="check small">
+                                <input type="checkbox" name="remember" checked>
+                                <span class="box"></span>
+                                <span>このアカウントを維持する</span>
+                            </label>
+                            <button type="button" class="link_small" id="forgot">パスワードを忘れた場合</button>
+                        </div>
+
+
+                        <!-- ログインボタン -->
+                        <button class="login_button" type="button">
+                            
+                            <span>ログイン</span>
+
+                            <!-- アイコン表示　矢印→ -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 2 4"
+                            fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
+                            data-lucide="arrow-right" aria-hidden="true">
+                                <path d="M5 12h14"></path>
+                                <path d="m12 5 7 7-7 7"></path>
+                            </svg>
+
+                        </button>
+
+
+                        <!-- お試しアカウント -->
+                        <div class="demo" id="demo_accounts">
+                            <p class="demo_title">
+                                
+                                <!-- フラスコアイコン -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
+                                data-lucide="flask-conical" aria-hidden="true" class="lucide lucide-flask-conica">
+                                    <path d="M14 2v6a2 2 0 0 0 .245.9615.51.10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.9615.51-10.08A2 2 0 0 0 10 8V2"></path>
+                                    <path d="M6.453 15h11.094"></path>
+                                    <path d="M8.5 2h7"></path>
+                                </svg>
+                                "デモアカウントで試す"
+                                <span class="demo_list">（パスワード　rebootgalaxy）</span>
+                            </p>
+
+                            <div class="demo_list">
+                                
+                                <button type="button" class="demo_chip" data_demo="ao@example.com">
+                                    <span class="av">灯</span>
+                                    <span>
+                                        <b>読者・利用者</b>
+                                        <small>灯野あお</small>
+                                    </span>
+                                </button>
+
+                                <button type="button" class="demo_chip" data_demo="sora@example.com">
+                                    <span class="av mint">如</span>
+                                    <span>
+                                        <b>デモ作品の制作者</b>
+                                        <small>如月そら</small>
+                                    </span>
+                                </button>
+
+                                <button type="button" class="demo_chip" data_demo="haru@example.com">
+                                    <span class="av amber">三</span>
+                                    <span>
+                                        <b>元資料の設定者</b>
+                                        <small>三重ハル</span>
+                                    </span>
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                    <!-- アカウント作成 -->
+                    <form id="from_register" role="tabpanel" aria-labelledby="tab_ragister" hidden novalidate>
+                        <label class="field">
+                            <input type="text" name="namae" placeholder="例：三重ハル" autocomplete="nickname" maxlength="40" required>
+                            <span class="label">表示する名前</span>
+                        </label>
+                        <label class="field">
+                            <input type="email" nama="email" placeholder="name@galaxy.com" autocomplete="email" required>
+                            <span class="label">メールアドレス</span>
+                            <span class="hint">ログインに使います。実際に使用していないアドレスも登できます。</span>
+                        </label>
+                        <label class="field">
+                            <input type="password" name="password" placeholder="８文字以上" autocomplete="new-password" minlength="8" required>
+                            <span class="label">パスワード（８文字以上）</span>
+                            
+                            <button type="button" class="trail" data-peek aria-label="パスワードを表示" aria-pressed="false">
+                        
+                            <!-- 目のアイコン -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
+                            data-lucide="eye" aria-hidden="true" class="lucide lucide-eye">
+                                <path d="M2.062 12.348a1 1 0 0 1 0-.6 96 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0">
+                                </path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+
+                            </button>
+                        </label>
+
+                        <div class="strength" aria-hidden="true">
+                            <i></i>
+                            <i></i>
+                            <i></i>
+                            <i></i>
+                            <span id="strength_label">英字と数字をまぜると安全です</span>
+                        </div>
+
+                        <button type="submit" class="btn_lg_block_launch">
+                            <span>アカウント作成</span>
+
+                            <!-- ロケット　できてない -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
+                            data-lucide="eye" aria-hidden="true" class="lucide lucide-eye">
+                                <path d="M2.062 12.348a1 1 0 0 1 0-.6 96 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0">
+                                </path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+
+                    </form>
+                    
+                </div>
+                <p class="form_status" role="status" aria-live="polite" hidden></p>
+
+                <!-- サーバーに届かない時だけ出る案内 -->
+                <div class="offline" id="offline" hidden>
+                    <h2>
+
+                        <!-- できてない -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
+                        data-lucide="eye" aria-hidden="true" class="lucide lucide-eye">
+                            <path d="M2.062 12.348a1 1 0 0 1 0-.6 96 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0">
+                            </path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>  
+                        "サーバーが動いていません"
+                    </h2>
+                    <p id="offline_why">アプリのサーバーと繋がってないため接続できません。</p>
+                    <ol>
+                        <li>
+                            "アプリのフォルダにある"
+                            <code>start-windows.bot</code>
+                            "（Macは"
+                            <code>start-mac.command</code>
+                            "）をダブルクリックしてください。ターミナルからは"
+                            <code>npm start</code>
+                            "こちらからです。"
+                        </li>
+                        <li>
+                            "「Reboot Galaxy NOVA が起動しました」と出たら"
+                            <a href="http:localhost:3000" id="open_link">http:localhost:3000</a>
+                            "を開いてください。"
+                        </li>
+                    </ol>
+                    <p id="offline_tip" class="note"></p>
+                </div>
+            </section>
+            <aside class="eyebrow" aria-label="今の銀河" data-intro>
+                <p class="eyebrow">
+                    "LIVE ・ 今の銀河"
+                </p>
+                <div class="live-stats">
+                    <div>
+                        <b data-stat="sources">6</b>
+                        <span>作品のもと</span>
+                    </div>
+    
+                    <div>
+                        <b data-stat="works">6</b>
+                        <span>完成ストーリー</span>
+                    </div>
+    
+                    <div>
+                        <b data-stat="creators">6</b>
+                        <span>作り手</span>
+                    </div>
+
+                </div>
+
+                <p class="live-copy mincho">
+                    "使われなかった設定資料が"<br>
+                    "次の作り手の物語になる。"
+                </p>
+
+                <div class="ticker" aria-hidden="true">
+                    <!-- 作品紹介（２０個）　流れてく感じ　 -->
+                    <div class="ticker-track" id="ticker">
+                        <span>
+                            <i class="bot cyan"></i>
+                            "新しい作品のもと「【デモ】夜だけ星座に変わる校舎」・三重ハル"
+                        </span>
+
+                        <span>
+                            <i class="bot cyan"></i>
+                            "新しい作品のもと「【デモ】夜だけ星座に変わる校舎」・三重ハル"
+                        </span>
+
+                        <span>
+                            <i class="bot cyan"></i>
+                            "新しい作品のもと「【デモ】夜だけ星座に変わる校舎」・三重ハル"
+                        </span>
+                    </div>
+                </div>
+
+                <p class="note">展示のデモです。実際はお金が動きません。</p>
+
+            </aside>
+
+        </main>
+
+
+
+        <footer class="foot" data-intro>
+            <span>© 2026 REBOOT GALAXY - NOVA EDITION</span>
+            <button type="button" class="motion-toggle" data-motion-toggle data-bound aria-pressed = "false" title="背景やワープの演出をすべて表紙します。">
+                <!-- アイコンリンク -->
+                <svg></svg>
+                <span>動き・控えめ</span>
+            </button>
+            <span class="mono">EARTH ・ 35゜41'N139゜41'E</span>
+        </footer>
+    </biv>
+
+
+</body>
+</html>
